@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/abc_ab_bottom_solid_light_holo"
+    android:clickable="false">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="0.56"
+        android:baselineAligned="false"
+        android:background="@drawable/abc_ab_transparent_dark_holo">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Descripció despesa"
+            android:id="@+id/Descripcion"
+            android:singleLine="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="data"
+            android:id="@+id/txtData" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="49dp"
+        android:layout_height="wrap_content"
+        android:text="Import"
+        android:id="@+id/txtImport"
+        android:layout_marginTop="0dp"
+        android:layout_marginLeft="40dp"
+        android:layout_gravity="bottom"
+        android:gravity="right" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/iBtnDelete"
+        android:focusableInTouchMode="false"
+        android:src="@drawable/abc_ic_clear_search_api_holo_light"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginLeft="2dp" />
+
+</LinearLayout>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Control Despeses</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+    <string-array name="conceptos_array">
+        <item>Desplaçaments</item>
+        <item>Jocs, loto</item>
+        <item>Menjar</item>
+        <item>Oci</item>
+        <item>Roba</item>
+        <item>Tecnologia</item>
+        <item>Vivenda</item>
+    </string-array>
+</resources>
