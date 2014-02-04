@@ -42,6 +42,15 @@ public class MainActivity extends Activity {
         db = new DatabaseManager(this);
         Despeses = db.getAllRows();
 
+
+        for(Object o: Despeses){
+        //    db.actualizarFecha((Despesa)o);
+
+        }
+
+
+
+
         importTxt = (EditText) findViewById(R.id.txtImport);
         despesesList = (ListView)findViewById(R.id.listView);
         populateList();
@@ -78,7 +87,7 @@ public class MainActivity extends Activity {
 
         final Button afgBtn = (Button) findViewById(R.id.btAfegir);
         final TextView importAvui = (TextView) findViewById(R.id.lblImportDespesaAvui);
-
+        final TextView importMitj = (TextView)findViewById(R.id.lblImportDespesaMitja);
 
         afgBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,7 +120,7 @@ public class MainActivity extends Activity {
         });
 
         importAvui.setText(GetTotalDespesesAvuiStr());
-
+        importMitj.setText(GetMitjaDespeses());
 
     }
 
@@ -131,6 +140,11 @@ public class MainActivity extends Activity {
         return formato.format(GetTotalDespesesAvui());
 
     }
+    public String GetMitjaDespeses()
+    {
+        DecimalFormat formato = new DecimalFormat("#,##0.00");
+        return formato.format(GetDespesaMitja());
+    }
     private Double GetTotalDespesesAvui()
     {
         Double totalHoy = 0d;
@@ -141,6 +155,43 @@ public class MainActivity extends Activity {
 
         }
         return totalHoy;
+    }
+    private Double GetDespesaMitja()
+    {
+        Double total = 0d;
+        Integer contador = 0;
+        List<DespesesDia> desDia = new ArrayList<DespesesDia>();
+
+        for(Object o: Despeses){
+            Date d =((Despesa)o).getDataDate();
+
+            AgregarDespesesDia(((Despesa)o), desDia);
+
+        }
+        for(Object o: desDia){
+            contador++;
+            total+=((DespesesDia)o).getImport();
+        }
+        if (contador!=0)
+            return total/contador;
+        else
+            return 0d;
+    }
+    private void AgregarDespesesDia(Despesa des, List<DespesesDia> lista)
+    {
+        String dia = des.getDataFormateadoDia();
+
+        //Buscar dia en lista
+        for(Object o: lista){
+            if (((DespesesDia)o).getDia().equals(dia))
+            {
+                ((DespesesDia)o).AgregarImporte(des.getImport());
+                return;
+            }
+
+        }
+        lista.add(new DespesesDia(dia, des.getImport()));
+
     }
     public static boolean isToday(Date date) {
         if (date == null) return false;
@@ -154,7 +205,30 @@ public class MainActivity extends Activity {
     }
 
 
+    private class DespesesDia
+    {
+        String _dia;
+        Double _TotalDia;
+        public DespesesDia(String dia, Double importe)
+        {
+            _dia = dia;
+            _TotalDia = importe;
+        }
+        void AgregarImporte(Double importe)
+        {
+            _TotalDia+=importe;
 
+        }
+        public String getDia()
+        {
+            return _dia;
+        }
+        public Double getImport()
+        {
+            return _TotalDia;
+        }
+
+    }
 
     private class DespesaListAdapter extends ArrayAdapter<Despesa>{
 
@@ -182,7 +256,7 @@ public class MainActivity extends Activity {
             holder.Import = (TextView)view.findViewById(R.id.txtImport);
             holder.Import.setText(currentDespesa.getImportStr());
             holder.Data = (TextView)view.findViewById(R.id.txtData);
-            holder.Data.setText(currentDespesa.getDataFormateado());
+            holder.Data.setText(currentDespesa.getDataBDNewFormat());
             holder.id  =  currentDespesa.getId();
             holder.btEliminar = (ImageButton)view.findViewById(R.id.iBtnDelete);
             setBtEliminarClickListener(holder);

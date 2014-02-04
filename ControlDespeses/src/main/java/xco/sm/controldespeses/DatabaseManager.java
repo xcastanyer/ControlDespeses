@@ -27,7 +27,8 @@ public class DatabaseManager {
            + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
            + KEY_CONCEPTE + " TEXT , "
            + KEY_IMPORT + " NUMERIC ,  "
-           + KEY_DATA + " TEXT )";
+           + KEY_DATA + " TIMESTAMP NOT NULL DEFAULT current_timestamp )";
+
     public static final String[] ALL_KEYS = new String[] {KEY_ID, KEY_CONCEPTE, KEY_IMPORT, KEY_DATA};
 
     private Context _context;
@@ -43,7 +44,7 @@ public class DatabaseManager {
         ContentValues valores = new ContentValues();
         valores.put(KEY_CONCEPTE, despesa.getDespesa());
         valores.put(KEY_IMPORT, despesa.getImport());
-        valores.put(KEY_DATA, despesa.getDataBD());
+        valores.put(KEY_DATA, despesa.getDataBDNewFormat());
         if (db.insert(TABLE_DESPESES,null, valores) != -1)
             Toast.makeText(_context, "Insertado correctamente en base de datos", Toast.LENGTH_SHORT).show();
         else
@@ -60,7 +61,7 @@ public class DatabaseManager {
     public List<Despesa> getAllRows()
     {
         List<Despesa> lstD = new ArrayList<Despesa>();
-        Cursor c = db.query(true, TABLE_DESPESES, ALL_KEYS, null,null,null,null,"Data DESC",null);
+        Cursor c = db.query(true, TABLE_DESPESES, ALL_KEYS, null,null,null,null,"ID DESC",null);
         if (c!=null){
             if (c.moveToFirst()){
                 do{
@@ -74,5 +75,13 @@ public class DatabaseManager {
 
         return lstD;
      }
+
+    public void actualizarFecha(Despesa despesa)
+    {
+        ContentValues args = new ContentValues();
+        args.put(KEY_DATA, despesa.getDataBDNewFormat());
+        db.update(TABLE_DESPESES, args, "ID=" + despesa.getId(), null);
+    }
+
 
 }

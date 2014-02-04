@@ -22,16 +22,18 @@ public class Despesa {
     public Despesa(String despesa, Double valor){
         _despesa = despesa;
         _valor = valor;
-        SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM d HH:mm:ss z yyyy");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Calendar c  = Calendar.getInstance();
         _data = c.getTime();
+       // c.set(114 + 1900, 1, 3, 0, 0, 0);
+       // _data = c.getTime();
         _id = 0;
     }
     public Despesa(int id, String despesa, Double valor, String fecha){
         _despesa = despesa;
         _valor = valor;
         _id = id;
-        SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM d HH:mm:ss z yyyy");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
 
             _data =  formatter.parse(fecha);
@@ -56,14 +58,20 @@ public class Despesa {
     public String getDataFormateado()
     {
         if (_data == null) return "";
-        SimpleDateFormat formatter = new SimpleDateFormat("EEE d MMM HH:mm:ss");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return formatter.format(_data);
+    }
+    public String getDataFormateadoDia()
+    {
+        if (_data == null) return "";
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         return formatter.format(_data);
     }
     public String getDataBD()
     {
         //SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM d HH:mm:ss z yyyy");
         if (_data == null) return "";
-        SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM d HH:mm:ss z yyyy");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         //SimpleDateFormat formatter = new SimpleDateFormat("EEE d MMM HH:mm:ss");
         return formatter.format(_data);
     }
@@ -75,5 +83,12 @@ public class Despesa {
     public Integer getId()
     {
         return _id;
+    }
+
+    public String getDataBDNewFormat() {
+        if (_data == null) return "";
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        //SimpleDateFormat formatter = new SimpleDateFormat("EEE d MMM HH:mm:ss");
+        return formatter.format(_data);
     }
 }
