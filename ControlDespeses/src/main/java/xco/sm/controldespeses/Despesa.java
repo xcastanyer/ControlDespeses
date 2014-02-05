@@ -2,6 +2,7 @@ package xco.sm.controldespeses;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -41,6 +42,34 @@ public class Despesa {
             e.printStackTrace();
         }
     }
+    public Despesa(int id, String despesa, Double valor, Date fecha){
+        _despesa = despesa;
+        _valor = valor;
+        _id = id;
+
+
+            _data =  fecha;
+
+    }
+    public int getAny()
+    {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(_data);
+
+        return calendar.get(Calendar.YEAR);
+    }
+    public int getMes(){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(_data);
+
+        return calendar.get(Calendar.MONTH) + 1;
+    }
+    public int geDias(){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(_data);
+
+        return calendar.get(Calendar.DAY_OF_MONTH);
+    }
     public String getDespesa()
     {
         return _despesa;
@@ -54,6 +83,11 @@ public class Despesa {
     {
         DecimalFormat formato = new DecimalFormat("#,##0.00");
         return formato.format(getImport());
+    }
+    public String getImportStrEdit()
+    {
+
+        return getImport().toString();
     }
     public String getDataFormateado()
     {

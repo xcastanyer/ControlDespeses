@@ -75,12 +75,38 @@ public class DatabaseManager {
 
         return lstD;
      }
+    public Despesa getDespesa(Integer id)
+    {
+        Cursor c = db.rawQuery("SELECT " + KEY_ID + ", " +  KEY_CONCEPTE + ", " + KEY_IMPORT + ", " +  KEY_DATA + " FROM " + TABLE_DESPESES + " WHERE ID=" + id.toString(),null);
+        if (c!=null){
+            if (c.moveToFirst()){
+                do{
+                    Despesa d = new Despesa(c.getInt(0), c.getString(1),c.getDouble(2),c.getString(3));
+                   return d;
+                }while(c.moveToNext());
+            }
+
+        }
+        return null;
+    }
 
     public void actualizarFecha(Despesa despesa)
     {
         ContentValues args = new ContentValues();
         args.put(KEY_DATA, despesa.getDataBDNewFormat());
         db.update(TABLE_DESPESES, args, "ID=" + despesa.getId(), null);
+    }
+    public void actualizarDespesa(Despesa despesa)
+    {
+        ContentValues args = new ContentValues();
+        args.put(KEY_DATA, despesa.getDataBDNewFormat());
+        args.put(KEY_CONCEPTE, despesa.getDespesa());
+        args.put(KEY_IMPORT, despesa.getImport());
+        if (db.update(TABLE_DESPESES, args, "ID=" + despesa.getId(), null)!=-1)
+        Toast.makeText(_context, "Actualizado correctamente en base de datos", Toast.LENGTH_SHORT).show();
+            else
+        Toast.makeText(_context, "Error al actualizar en base de datos", Toast.LENGTH_SHORT).show();
+
     }
 
 

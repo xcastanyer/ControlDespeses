@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
@@ -34,7 +36,11 @@ public class MainActivity extends Activity {
     ListView despesesList;
     DatabaseManager db;
     String ConceptoSeleccionado = "Comida";
-    @Override
+
+
+
+
+        @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -43,10 +49,6 @@ public class MainActivity extends Activity {
         Despeses = db.getAllRows();
 
 
-        for(Object o: Despeses){
-        //    db.actualizarFecha((Despesa)o);
-
-        }
 
 
 
@@ -241,6 +243,8 @@ public class MainActivity extends Activity {
 
         }
 
+
+
         @Override
         public View getView(int position, View view, ViewGroup parent){
             DespesaHolder holder = null;
@@ -259,13 +263,33 @@ public class MainActivity extends Activity {
             holder.Data.setText(currentDespesa.getDataBDNewFormat());
             holder.id  =  currentDespesa.getId();
             holder.btEliminar = (ImageButton)view.findViewById(R.id.iBtnDelete);
+            holder.view = view;
             setBtEliminarClickListener(holder);
+
 
 
             return view;
 
         }
         private void setBtEliminarClickListener(final DespesaHolder holder){
+
+            holder.view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent =
+                            new Intent(MainActivity.this, EditActivity.class);
+                    //Creamos la información a pasar entre actividades
+                    Bundle b = new Bundle();
+                    b.putInt("ID", holder.id);
+
+                    //Añadimos la información al intent
+                    intent.putExtras(b);
+                    startActivity(intent);
+
+                }
+            });
+
+
             holder.btEliminar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -309,6 +333,7 @@ public class MainActivity extends Activity {
         TextView Import;
         TextView Data;
         ImageButton btEliminar;
+        View view;
     }
 
     @Override

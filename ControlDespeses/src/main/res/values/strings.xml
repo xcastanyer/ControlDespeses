@@ -15,4 +15,7 @@
         <item>Tecnologia</item>
         <item>Vivenda</item>
     </string-array>
+
+    <string name="title_activity_edit">EditActivity</string>
+
 </resources>
