@@ -17,6 +17,6 @@
         <item>Vivenda</item>
     </string-array>
 
-    <string name="title_activity_edit">EditActivity</string>
+    <string name="title_activity_edit">Edició despesa</string>
 
 </resources>
