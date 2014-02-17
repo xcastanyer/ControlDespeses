@@ -102,6 +102,7 @@ public class MainActivity extends Activity {
                 Toast.makeText(getApplicationContext(), "La despesa ha estat registrada.!", Toast.LENGTH_SHORT).show();
                 importTxt.setText("");
                 importAvui.setText(GetTotalDespesesAvuiStr());
+                importMitj.setText(GetMitjaDespeses());
             }
         });
         importTxt.addTextChangedListener(new TextWatcher() {

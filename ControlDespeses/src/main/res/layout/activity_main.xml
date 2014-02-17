@@ -43,6 +43,14 @@
                         android:layout_marginTop="20dp"
                         android:layout_gravity="center_horizontal" />
 
+                    <Spinner
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/spLlistaConceptes"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginBottom="0dp"
+                        android:layout_marginTop="30dp" />
+
                     <EditText
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
@@ -52,13 +60,6 @@
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="40dp"
                         android:hint="Import despesa" />
-
-                    <Spinner
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/spLlistaConceptes"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginBottom="40dp" />
 
                     <Button
                         android:layout_width="fill_parent"

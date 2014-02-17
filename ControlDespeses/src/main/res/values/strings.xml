@@ -8,9 +8,13 @@
     <string-array name="conceptos_array">
         <item>Desplaçaments</item>
         <item>Farmacia</item>
-        <item>Jocs, loto</item>
+        <item>Joguines</item>
+        <item>Loto</item>
         <item>Menjar</item>
+        <item>Multes</item>
         <item>Oci</item>
+        <item>Perruqueria</item>
+        <item>Regals</item>
         <item>Roba</item>
         <item>Super</item>
         <item>Tecnologia</item>
