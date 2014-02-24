@@ -24,6 +24,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -175,6 +177,17 @@ public class MainActivity extends Activity {
             contador++;
             total+=((DespesesDia)o).getImport();
         }
+        Calendar c  = Calendar.getInstance();
+
+        Date Avui;
+        Avui = c.getTime();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        String AvuiStr =  formatter.format(Avui);
+
+        String PrimeraDataStr = Despeses.get(Despeses.size()-1).getDataFormateadoDia();
+
+        long  dias = DiferenciaFechasDias(AvuiStr, PrimeraDataStr);
+        contador = (int)dias;
         if (contador!=0)
             return total/contador;
         else
@@ -345,6 +358,79 @@ public class MainActivity extends Activity {
         return true;
     }
 
+    public static long DiferenciaFechasDias(String vinicio, String vfinal){
 
+        Date dinicio = null, dfinal = null;
+        long milis1, milis2, diff;
+
+        SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd");
+
+        try {
+            // PARSEO STRING A DATE
+            dinicio = sdf.parse(vinicio);
+            dfinal = sdf.parse(vfinal);
+
+        } catch (ParseException e) {
+
+            System.out.println("Se ha producido un error en el parseo");
+        }
+
+        //INSTANCIA DEL CALENDARIO GREGORIANO
+        Calendar cinicio = Calendar.getInstance();
+        Calendar cfinal = Calendar.getInstance();
+
+        //ESTABLECEMOS LA FECHA DEL CALENDARIO CON EL DATE GENERADO ANTERIORMENTE
+        cinicio.setTime(dinicio);
+        cfinal.setTime(dfinal);
+
+
+        milis1 = cinicio.getTimeInMillis();
+
+        milis2 = cfinal.getTimeInMillis();
+
+
+        diff = milis2-milis1;
+
+
+        // calcular la diferencia en segundos
+
+        long diffSegundos =  Math.abs (diff / 1000);
+
+
+        // calcular la diferencia en minutos
+
+        long diffMinutos =  Math.abs (diff / (60 * 1000));
+
+
+        long restominutos = diffMinutos%60;
+
+
+
+        // calcular la diferencia en horas
+
+        long diffHoras =   (diff / (60 * 60 * 1000));
+
+
+
+        // calcular la diferencia en dias
+
+        long diffdias = Math.abs ( diff / (24 * 60 * 60 * 1000) );
+
+
+     /*
+     System.out.println("En segundos: " + diffSegundos + " segundos.");
+
+     System.out.println("En minutos: " + diffMinutos + " minutos.");
+
+     System.out.println("En horas: " + diffHoras + " horas.");
+
+     System.out.println("En dias: " + diffdias + " dias.");
+     */
+
+        return diffdias;
+        /*String devolver = String.valueOf(diffdias);
+
+        return devolver;*/
+    }
 
 }
