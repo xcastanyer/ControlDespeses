@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.method.HideReturnsTransformationMethod;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
@@ -92,7 +93,7 @@ public class MainActivity extends Activity {
         final Button afgBtn = (Button) findViewById(R.id.btAfegir);
         final TextView importAvui = (TextView) findViewById(R.id.lblImportDespesaAvui);
         final TextView importMitj = (TextView)findViewById(R.id.lblImportDespesaMitja);
-
+        final TextView importMitjHora = (TextView)findViewById(R.id.lblImportDMHora);
         afgBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -104,7 +105,7 @@ public class MainActivity extends Activity {
                 Toast.makeText(getApplicationContext(), "La despesa ha estat registrada.!", Toast.LENGTH_SHORT).show();
                 importTxt.setText("");
                 importAvui.setText(GetTotalDespesesAvuiStr());
-                importMitj.setText(GetMitjaDespeses());
+                importMitj.setText(GetMitjaDespeses("DIA"));
             }
         });
         importTxt.addTextChangedListener(new TextWatcher() {
@@ -125,8 +126,8 @@ public class MainActivity extends Activity {
         });
 
         importAvui.setText(GetTotalDespesesAvuiStr());
-        importMitj.setText(GetMitjaDespeses());
-
+        importMitj.setText(GetMitjaDespeses("DIA"));
+        importMitjHora.setText(GetMitjaDespeses("MIN"));
     }
 
     private void populateList(){
@@ -145,10 +146,10 @@ public class MainActivity extends Activity {
         return formato.format(GetTotalDespesesAvui());
 
     }
-    public String GetMitjaDespeses()
+    public String GetMitjaDespeses(String tipo)
     {
         DecimalFormat formato = new DecimalFormat("#,##0.00");
-        return formato.format(GetDespesaMitja());
+        return formato.format(GetDespesaMitja(tipo));
     }
     private Double GetTotalDespesesAvui()
     {
@@ -161,7 +162,7 @@ public class MainActivity extends Activity {
         }
         return totalHoy;
     }
-    private Double GetDespesaMitja()
+    private Double GetDespesaMitja(String tipo)
     {
         Double total = 0d;
         Integer contador = 0;
@@ -181,13 +182,14 @@ public class MainActivity extends Activity {
 
         Date Avui;
         Avui = c.getTime();
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String AvuiStr =  formatter.format(Avui);
 
-        String PrimeraDataStr = Despeses.get(Despeses.size()-1).getDataFormateadoDia();
+        String PrimeraDataStr = Despeses.get(Despeses.size()-1).getDataFormateado();
 
-        long  dias = DiferenciaFechasDias(AvuiStr, PrimeraDataStr);
-        contador = (int)dias;
+       // long  dias = DiferenciaFechasDias(AvuiStr, PrimeraDataStr, tipo);
+        long  dias = DiferenciaFechasDias(Avui,  Despeses.get(Despeses.size()-1).getDataDate(), tipo);
+                      contador = (int)dias;
         if (contador!=0)
             return total/contador;
         else
@@ -358,12 +360,13 @@ public class MainActivity extends Activity {
         return true;
     }
 
-    public static long DiferenciaFechasDias(String vinicio, String vfinal){
+    // public static long DiferenciaFechasDias(String vinicio, String vfinal, String tipo){
+    public static long DiferenciaFechasDias(Date dinicio, Date dfinal, String tipo){
 
-        Date dinicio = null, dfinal = null;
+     //   Date dinicio = null, dfinal = null;
         long milis1, milis2, diff;
 
-        SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd");
+      /*  SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd");
 
         try {
             // PARSEO STRING A DATE
@@ -374,7 +377,7 @@ public class MainActivity extends Activity {
 
             System.out.println("Se ha producido un error en el parseo");
         }
-
+*/
         //INSTANCIA DEL CALENDARIO GREGORIANO
         Calendar cinicio = Calendar.getInstance();
         Calendar cfinal = Calendar.getInstance();
@@ -426,7 +429,14 @@ public class MainActivity extends Activity {
 
      System.out.println("En dias: " + diffdias + " dias.");
      */
+    if (tipo.equals("DIA"))
+        return diffdias;
 
+    if (tipo.equals("HOR"))
+        return diffHoras;
+
+        if (tipo.equals("MIN"))
+            return diffMinutos;
         return diffdias;
         /*String devolver = String.valueOf(diffdias);
 
