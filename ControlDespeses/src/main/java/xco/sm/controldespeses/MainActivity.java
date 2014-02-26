@@ -39,7 +39,7 @@ public class MainActivity extends Activity {
     ListView despesesList;
     DatabaseManager db;
     String ConceptoSeleccionado = "Comida";
-
+    Date PrimeraDataDate;
 
 
 
@@ -50,7 +50,7 @@ public class MainActivity extends Activity {
 
         db = new DatabaseManager(this);
         Despeses = db.getAllRows();
-
+            PrimeraDataDate    = Despeses.get(Despeses.size()-1).getDataDate();
 
 
 
@@ -127,7 +127,7 @@ public class MainActivity extends Activity {
 
         importAvui.setText(GetTotalDespesesAvuiStr());
         importMitj.setText(GetMitjaDespeses("DIA"));
-        importMitjHora.setText(GetMitjaDespeses("MIN"));
+        importMitjHora.setText(GetMitjaDespeses("SEM"));
     }
 
     private void populateList(){
@@ -148,7 +148,7 @@ public class MainActivity extends Activity {
     }
     public String GetMitjaDespeses(String tipo)
     {
-        DecimalFormat formato = new DecimalFormat("#,##0.00");
+        DecimalFormat formato = new DecimalFormat("#,##0.000");
         return formato.format(GetDespesaMitja(tipo));
     }
     private Double GetTotalDespesesAvui()
@@ -185,11 +185,8 @@ public class MainActivity extends Activity {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String AvuiStr =  formatter.format(Avui);
 
-        String PrimeraDataStr = Despeses.get(Despeses.size()-1).getDataFormateado();
-
-       // long  dias = DiferenciaFechasDias(AvuiStr, PrimeraDataStr, tipo);
-        long  dias = DiferenciaFechasDias(Avui,  Despeses.get(Despeses.size()-1).getDataDate(), tipo);
-                      contador = (int)dias;
+        long  diferenciaTiempo = DiferenciaFechasDias(Avui, PrimeraDataDate, tipo);
+        contador = (int)diferenciaTiempo;
         if (contador!=0)
             return total/contador;
         else
@@ -363,21 +360,8 @@ public class MainActivity extends Activity {
     // public static long DiferenciaFechasDias(String vinicio, String vfinal, String tipo){
     public static long DiferenciaFechasDias(Date dinicio, Date dfinal, String tipo){
 
-     //   Date dinicio = null, dfinal = null;
         long milis1, milis2, diff;
 
-      /*  SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd");
-
-        try {
-            // PARSEO STRING A DATE
-            dinicio = sdf.parse(vinicio);
-            dfinal = sdf.parse(vfinal);
-
-        } catch (ParseException e) {
-
-            System.out.println("Se ha producido un error en el parseo");
-        }
-*/
         //INSTANCIA DEL CALENDARIO GREGORIANO
         Calendar cinicio = Calendar.getInstance();
         Calendar cfinal = Calendar.getInstance();
@@ -420,24 +404,23 @@ public class MainActivity extends Activity {
         long diffdias = Math.abs ( diff / (24 * 60 * 60 * 1000) );
 
 
-     /*
-     System.out.println("En segundos: " + diffSegundos + " segundos.");
+    if (tipo.equals("ANY"))
+        return diffdias/365;
+    if (tipo.equals("MES"))
+        return diffdias/30;
+    if (tipo.equals("SEM"))
+        return diffdias/7;
 
-     System.out.println("En minutos: " + diffMinutos + " minutos.");
-
-     System.out.println("En horas: " + diffHoras + " horas.");
-
-     System.out.println("En dias: " + diffdias + " dias.");
-     */
     if (tipo.equals("DIA"))
         return diffdias;
 
     if (tipo.equals("HOR"))
         return diffHoras;
 
-        if (tipo.equals("MIN"))
-            return diffMinutos;
-        return diffdias;
+    if (tipo.equals("MIN"))
+        return diffMinutos;
+
+    return diffdias;
         /*String devolver = String.valueOf(diffdias);
 
         return devolver;*/
