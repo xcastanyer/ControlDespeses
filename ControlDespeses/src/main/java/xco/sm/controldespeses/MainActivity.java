@@ -165,7 +165,7 @@ public class MainActivity extends Activity {
     private Double GetDespesaMitja(String tipo)
     {
         Double total = 0d;
-        Integer contador = 0;
+
         List<DespesesDia> desDia = new ArrayList<DespesesDia>();
 
         for(Object o: Despeses){
@@ -175,7 +175,7 @@ public class MainActivity extends Activity {
 
         }
         for(Object o: desDia){
-            contador++;
+
             total+=((DespesesDia)o).getImport();
         }
         Calendar c  = Calendar.getInstance();
@@ -185,10 +185,10 @@ public class MainActivity extends Activity {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String AvuiStr =  formatter.format(Avui);
 
-        long  diferenciaTiempo = DiferenciaFechasDias(Avui, PrimeraDataDate, tipo);
-        contador = (int)diferenciaTiempo;
-        if (contador!=0)
-            return total/contador;
+        double  diferenciaTiempo = DiferenciaFechasDias(Avui, PrimeraDataDate, tipo);
+
+        if (diferenciaTiempo!=0)
+            return total/diferenciaTiempo;
         else
             return 0d;
     }
@@ -358,9 +358,9 @@ public class MainActivity extends Activity {
     }
 
     // public static long DiferenciaFechasDias(String vinicio, String vfinal, String tipo){
-    public static long DiferenciaFechasDias(Date dinicio, Date dfinal, String tipo){
+    public static double DiferenciaFechasDias(Date dinicio, Date dfinal, String tipo){
 
-        long milis1, milis2, diff;
+        double milis1, milis2, diff;
 
         //INSTANCIA DEL CALENDARIO GREGORIANO
         Calendar cinicio = Calendar.getInstance();
@@ -381,27 +381,27 @@ public class MainActivity extends Activity {
 
         // calcular la diferencia en segundos
 
-        long diffSegundos =  Math.abs (diff / 1000);
+        double diffSegundos =  Math.abs (diff / 1000);
 
 
         // calcular la diferencia en minutos
 
-        long diffMinutos =  Math.abs (diff / (60 * 1000));
+        double diffMinutos =  Math.abs (diff / (60 * 1000));
 
 
-        long restominutos = diffMinutos%60;
+        double restominutos = diffMinutos%60;
 
 
 
         // calcular la diferencia en horas
 
-        long diffHoras =   (diff / (60 * 60 * 1000));
+        double diffHoras =   (diff / (60 * 60 * 1000));
 
 
 
         // calcular la diferencia en dias
 
-        long diffdias = Math.abs ( diff / (24 * 60 * 60 * 1000) );
+        double diffdias = Math.abs ( diff / (24 * 60 * 60 * 1000) );
 
 
     if (tipo.equals("ANY"))
