@@ -6,10 +6,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.text.method.HideReturnsTransformationMethod;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,38 +22,24 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.text.DecimalFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 public class MainActivity extends Activity {
 
     EditText importTxt;
-    List<Despesa> Despeses = new ArrayList<Despesa>();
+    //List<Despesa> Despeses = new ArrayList<Despesa>();
     ListView despesesList;
-    DatabaseManager db;
+    //DatabaseManager db;
     String ConceptoSeleccionado = "Comida";
     Date PrimeraDataDate;
-
+    ServeiDespeses s;
 
 
         @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        db = new DatabaseManager(this);
-        Despeses = db.getAllRows();
-            PrimeraDataDate    = Despeses.get(Despeses.size()-1).getDataDate();
-
-
-
-
-
+        s = new ServeiDespeses(this);
         importTxt = (EditText) findViewById(R.id.txtImport);
         despesesList = (ListView)findViewById(R.id.listView);
         populateList();
@@ -93,19 +77,25 @@ public class MainActivity extends Activity {
         final Button afgBtn = (Button) findViewById(R.id.btAfegir);
         final TextView importAvui = (TextView) findViewById(R.id.lblImportDespesaAvui);
         final TextView importMitj = (TextView)findViewById(R.id.lblImportDespesaMitja);
-        final TextView importMitjHora = (TextView)findViewById(R.id.lblImportDMHora);
+        final TextView importMitjSetmana = (TextView)findViewById(R.id.lblImportDMSetmana);
+        final TextView importMitjHORA = (TextView)findViewById(R.id.lblImportDMHora);
+        final TextView importMitjMES = (TextView)findViewById(R.id.lblImportDMMes);
+        final TextView importMitjANY = (TextView)findViewById(R.id.lblImportDMAny);
+
         afgBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
                 AfgDespesa(ConceptoSeleccionado, Double.parseDouble(importTxt.getText().toString()));
                 populateList();
 
                 Toast.makeText(getApplicationContext(), "La despesa ha estat registrada.!", Toast.LENGTH_SHORT).show();
                 importTxt.setText("");
-                importAvui.setText(GetTotalDespesesAvuiStr());
-                importMitj.setText(GetMitjaDespeses("DIA"));
+                importAvui.setText(s.GetTotalDespesesAvuiStr());
+                importMitj.setText(s.GetMitjaDespeses(ServeiDespeses.TipusMitja.Dia));
+                importMitjSetmana.setText(s.GetMitjaDespeses(ServeiDespeses.TipusMitja.Setmana));
+                importMitjHORA.setText(s.GetMitjaDespeses(ServeiDespeses.TipusMitja.Hora));
+                importMitjMES.setText(s.GetMitjaDespeses(ServeiDespeses.TipusMitja.Mes));
+                importMitjANY.setText(s.GetMitjaDespeses(ServeiDespeses.TipusMitja.Any, "#,##0"));
             }
         });
         importTxt.addTextChangedListener(new TextWatcher() {
@@ -125,132 +115,31 @@ public class MainActivity extends Activity {
             }
         });
 
-        importAvui.setText(GetTotalDespesesAvuiStr());
-        importMitj.setText(GetMitjaDespeses("DIA"));
-        importMitjHora.setText(GetMitjaDespeses("SEM"));
-    }
+        importAvui.setText(s.GetTotalDespesesAvuiStr());
+        importMitj.setText(s.GetMitjaDespeses(ServeiDespeses.TipusMitja.Dia));
+        importMitjSetmana.setText(s.GetMitjaDespeses(ServeiDespeses.TipusMitja.Setmana));
+        importMitjHORA.setText(s.GetMitjaDespeses(ServeiDespeses.TipusMitja.Hora));
+        importMitjMES.setText(s.GetMitjaDespeses(ServeiDespeses.TipusMitja.Mes));
+            importMitjANY.setText(s.GetMitjaDespeses(ServeiDespeses.TipusMitja.Any, "#,##0"));
+}
 
     private void populateList(){
         ArrayAdapter<Despesa> adaptador = new DespesaListAdapter(this);
         despesesList.setAdapter(adaptador);
     }
     private void AfgDespesa(String despesa, Double valor){
-        db.insertar(new Despesa(despesa, valor));
-        Despeses.add(new Despesa(despesa, valor));
 
-    }
-
-    private String GetTotalDespesesAvuiStr()
-    {
-        DecimalFormat formato = new DecimalFormat("#,##0.00");
-        return formato.format(GetTotalDespesesAvui());
-
-    }
-    public String GetMitjaDespeses(String tipo)
-    {
-        DecimalFormat formato = new DecimalFormat("#,##0.000");
-        return formato.format(GetDespesaMitja(tipo));
-    }
-    private Double GetTotalDespesesAvui()
-    {
-        Double totalHoy = 0d;
-        for(Object o: Despeses){
-            if (isToday(((Despesa)o).getDataDate()))            {
-                totalHoy+=((Despesa)o).getImport();
-            }
-
-        }
-        return totalHoy;
-    }
-    private Double GetDespesaMitja(String tipo)
-    {
-        Double total = 0d;
-
-        List<DespesesDia> desDia = new ArrayList<DespesesDia>();
-
-        for(Object o: Despeses){
-            Date d =((Despesa)o).getDataDate();
-
-            AgregarDespesesDia(((Despesa)o), desDia);
-
-        }
-        for(Object o: desDia){
-
-            total+=((DespesesDia)o).getImport();
-        }
-        Calendar c  = Calendar.getInstance();
-
-        Date Avui;
-        Avui = c.getTime();
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String AvuiStr =  formatter.format(Avui);
-
-        double  diferenciaTiempo = DiferenciaFechasDias(Avui, PrimeraDataDate, tipo);
-
-        if (diferenciaTiempo!=0)
-            return total/diferenciaTiempo;
-        else
-            return 0d;
-    }
-    private void AgregarDespesesDia(Despesa des, List<DespesesDia> lista)
-    {
-        String dia = des.getDataFormateadoDia();
-
-        //Buscar dia en lista
-        for(Object o: lista){
-            if (((DespesesDia)o).getDia().equals(dia))
-            {
-                ((DespesesDia)o).AgregarImporte(des.getImport());
-                return;
-            }
-
-        }
-        lista.add(new DespesesDia(dia, des.getImport()));
-
-    }
-    public static boolean isToday(Date date) {
-        if (date == null) return false;
-        Calendar today = Calendar.getInstance();
-        today.setTime(new Date());
-        Calendar otherday = Calendar.getInstance();
-        otherday.setTime(date);
-        return otherday.get(Calendar.YEAR) == today.get(Calendar.YEAR)
-                && otherday.get(Calendar.MONTH) == today.get(Calendar.MONTH)
-                && otherday.get(Calendar.DAY_OF_MONTH) == today.get(Calendar.DAY_OF_MONTH);
+        s.AfegirDespesa(despesa, valor);
     }
 
 
-    private class DespesesDia
-    {
-        String _dia;
-        Double _TotalDia;
-        public DespesesDia(String dia, Double importe)
-        {
-            _dia = dia;
-            _TotalDia = importe;
-        }
-        void AgregarImporte(Double importe)
-        {
-            _TotalDia+=importe;
-
-        }
-        public String getDia()
-        {
-            return _dia;
-        }
-        public Double getImport()
-        {
-            return _TotalDia;
-        }
-
-    }
 
     private class DespesaListAdapter extends ArrayAdapter<Despesa>{
 
         private Context _context;
 
         public DespesaListAdapter(Context context){
-            super (context, R.layout.listview_item, Despeses  );
+            super (context, R.layout.listview_item, s.Despeses  );
             _context = context;
 
 
@@ -267,7 +156,7 @@ public class MainActivity extends Activity {
 
             holder = new DespesaHolder();
 
-            Despesa currentDespesa = Despeses.get(position);
+            Despesa currentDespesa = s.Despeses.get(position);
             holder.Descripcion = (TextView)view.findViewById(R.id.Descripcion);
             holder.Descripcion.setText(currentDespesa.getDespesa());
             holder.Import = (TextView)view.findViewById(R.id.txtImport);
@@ -322,7 +211,7 @@ public class MainActivity extends Activity {
                                     // if this button is clicked, close
                                     // current activity
                                     Toast.makeText(getApplicationContext(), "S'ha eliminat el registre: " +  holder.id.toString(), Toast.LENGTH_SHORT).show();
-                                    db.eliminar(holder.id);
+                                    s.EliminarDespesa(holder.id);
                                     populateList();
                                 }
                             })
@@ -357,73 +246,5 @@ public class MainActivity extends Activity {
         return true;
     }
 
-    // public static long DiferenciaFechasDias(String vinicio, String vfinal, String tipo){
-    public static double DiferenciaFechasDias(Date dinicio, Date dfinal, String tipo){
-
-        double milis1, milis2, diff;
-
-        //INSTANCIA DEL CALENDARIO GREGORIANO
-        Calendar cinicio = Calendar.getInstance();
-        Calendar cfinal = Calendar.getInstance();
-
-        //ESTABLECEMOS LA FECHA DEL CALENDARIO CON EL DATE GENERADO ANTERIORMENTE
-        cinicio.setTime(dinicio);
-        cfinal.setTime(dfinal);
-
-
-        milis1 = cinicio.getTimeInMillis();
-
-        milis2 = cfinal.getTimeInMillis();
-
-
-        diff = milis2-milis1;
-
-
-        // calcular la diferencia en segundos
-
-        double diffSegundos =  Math.abs (diff / 1000);
-
-
-        // calcular la diferencia en minutos
-
-        double diffMinutos =  Math.abs (diff / (60 * 1000));
-
-
-        double restominutos = diffMinutos%60;
-
-
-
-        // calcular la diferencia en horas
-
-        double diffHoras =   (diff / (60 * 60 * 1000));
-
-
-
-        // calcular la diferencia en dias
-
-        double diffdias = Math.abs ( diff / (24 * 60 * 60 * 1000) );
-
-
-    if (tipo.equals("ANY"))
-        return diffdias/365;
-    if (tipo.equals("MES"))
-        return diffdias/30;
-    if (tipo.equals("SEM"))
-        return diffdias/7;
-
-    if (tipo.equals("DIA"))
-        return diffdias;
-
-    if (tipo.equals("HOR"))
-        return diffHoras;
-
-    if (tipo.equals("MIN"))
-        return diffMinutos;
-
-    return diffdias;
-        /*String devolver = String.valueOf(diffdias);
-
-        return devolver;*/
-    }
 
 }
