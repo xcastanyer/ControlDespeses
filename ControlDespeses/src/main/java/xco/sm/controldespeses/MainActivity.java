@@ -22,6 +22,7 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.Date;
 
 public class MainActivity extends Activity {
@@ -39,7 +40,21 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
         s = new ServeiDespeses(this);
+
+           // try
+
+            {
+
+               // DatabaseHelper.BD_Restore();
+            }
+           // catch (IOException ex)
+            {
+           //     Toast.makeText(getApplicationContext(), ex.getMessage(), Toast.LENGTH_LONG).show();
+            }
+
         importTxt = (EditText) findViewById(R.id.txtImport);
         despesesList = (ListView)findViewById(R.id.listView);
         populateList();
