@@ -49,10 +49,7 @@ public class Despesa {
         _despesa = despesa;
         _valor = valor;
         _id = id;
-
-
-            _data =  fecha;
-
+        _data =  fecha;
     }
     public int getAny()
     {
