@@ -62,7 +62,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         output.flush();
         output.close();
-        fis.close();
+         fis.close();
 
     }
     public static void BD_Restore() throws IOException {
