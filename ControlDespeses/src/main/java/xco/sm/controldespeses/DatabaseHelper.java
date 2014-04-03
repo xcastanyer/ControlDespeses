@@ -62,6 +62,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         output.flush();
         output.close();
+
+        //
          fis.close();
 
     }
